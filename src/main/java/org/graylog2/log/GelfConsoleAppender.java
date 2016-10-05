@@ -20,6 +20,7 @@ public class GelfConsoleAppender extends ConsoleAppender implements GelfMessageP
 	private boolean addExtendedInformation;
 	private boolean includeLocation = true;
 	private Map<String, String> fields;
+	private boolean onlyShortMessage = false;
 
 	public GelfConsoleAppender() {
 		super();
@@ -59,6 +60,14 @@ public class GelfConsoleAppender extends ConsoleAppender implements GelfMessageP
 
 	public boolean isIncludeLocation() {
 		return this.includeLocation;
+	}
+
+	public boolean isOnlyShortMessage() {
+		return onlyShortMessage;
+	}
+
+	public void setOnlyShortMessage(boolean onlyShortMessage) {
+		this.onlyShortMessage = onlyShortMessage;
 	}
 
 	public void setIncludeLocation(boolean includeLocation) {

@@ -33,7 +33,9 @@ public class GelfMessage {
 		sb.append("\t\"version\": ").append(JSON.encodeQuoted(getVersion())).append(",\r\n");
 		sb.append("\t\"host\": ").append(JSON.encodeQuoted(getHost())).append(",\r\n");
 		sb.append("\t\"short_message\": ").append(JSON.encodeQuoted(getShortMessage())).append(",\r\n");
-		sb.append("\t\"full_message\": ").append(JSON.encodeQuoted(getFullMessage())).append(",\r\n");
+		if ( getFullMessage() != null) {
+			sb.append("\t\"full_message\": ").append(JSON.encodeQuoted(getFullMessage())).append(",\r\n");
+		}
 		sb.append("\t\"timestamp\": ").append(getTimestamp()).append(",\r\n");
 		sb.append("\t\"facility\": ").append(JSON.encodeQuoted(getFacility())).append(",\r\n");
 		if (getFile() != null) {

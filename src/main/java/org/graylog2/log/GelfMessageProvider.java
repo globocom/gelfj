@@ -14,4 +14,6 @@ public interface GelfMessageProvider {
 	public boolean isAddExtendedInformation();
 
 	public boolean isIncludeLocation();
+
+	boolean isOnlyShortMessage();
 }

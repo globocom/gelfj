@@ -29,6 +29,7 @@ public class GelfAppender extends AppenderSkeleton implements GelfMessageProvide
 	private GelfSender gelfSender;
 	private GelfMessageFactory messageFactory;
 	private boolean extractStacktrace;
+	private boolean onlyShortMessage = false;
 	private boolean addExtendedInformation;
 	private boolean includeLocation = true;
 	private Map<String, String> fields;
@@ -182,6 +183,15 @@ public class GelfAppender extends AppenderSkeleton implements GelfMessageProvide
 	public boolean isAddExtendedInformation() {
 		return addExtendedInformation;
 	}
+
+	public boolean isOnlyShortMessage() {
+		return onlyShortMessage;
+	}
+
+	public void setOnlyShortMessage(boolean onlyShortMessage) {
+		this.onlyShortMessage = onlyShortMessage;
+	}
+
 
 	public void setAddExtendedInformation(boolean addExtendedInformation) {
 		this.addExtendedInformation = addExtendedInformation;

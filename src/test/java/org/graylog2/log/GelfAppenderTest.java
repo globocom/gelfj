@@ -157,7 +157,7 @@ public class GelfAppenderTest {
 
 		gelfAppender.append(event);
 
-		assertEquals(gelfSender.getLastMessage().getAdditionalFields().get("logger"), CLASS_NAME);
+		assertEquals(gelfSender.getLastMessage().getAdditionalFields().get("javaclass"), CLASS_NAME);
 	}
 
 	private class TestGelfSender implements GelfSender {

@@ -6,7 +6,7 @@ import java.util.Map.Entry;
 import org.graylog2.host.HostConfiguration;
 
 public class GelfMessageBuilder {
-    public static final String LOGGER_NAME_FIELD = "logger";
+    public static final String LOGGER_NAME_FIELD = "javaclass";
     public static final String THREAD_NAME_FIELD = "thread";
 	public static final String LOGGER_LEVEL_FIELD = "level";
 	public static final String SOURCE_CLASS_FIELD = "SourceClassName";

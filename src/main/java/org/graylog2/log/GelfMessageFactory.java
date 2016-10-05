@@ -47,7 +47,14 @@ public class GelfMessageFactory {
 		String fullMessage = formatMessage(layout, event, provider);
 		builder.setLevel(String.valueOf(level.getSyslogEquivalent()));
 		builder.setJavaTimestamp(timeStamp);
-		builder.setFullMessage(fullMessage);
+
+
+		if (provider.isOnlyShortMessage()) {
+			builder.setShortMessage(fullMessage);
+		} else {
+			builder.setFullMessage(fullMessage);
+		}
+
 		builder.addFields(provider.getFields());
 
 		if (provider.isAddExtendedInformation()) {

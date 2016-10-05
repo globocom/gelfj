@@ -15,8 +15,8 @@
 		<url>git@github.com:t0xa/gelfj.git</url>
 		<tag>HEAD</tag>
 	</scm>
-
-	<groupId>org.graylog2</groupId>
+	<!-- we changed from org.graylog2 because we will create and publish our own version -->
+	<groupId>com.globo.graylog2</groupId>
 	<artifactId>gelfj</artifactId>
 	<version>1.1.16-SNAPSHOT</version>
 	<packaging>jar</packaging>
@@ -54,7 +54,6 @@
 			<groupId>com.googlecode.json-simple</groupId>
 			<artifactId>json-simple</artifactId>
 			<version>1.1</version>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -62,6 +61,7 @@
 			<version>4.9</version>
 			<scope>test</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>

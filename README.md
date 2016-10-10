@@ -9,9 +9,9 @@ Add the following dependency section to your pom.xml:
     <dependencies>
       ...
       <dependency>
-        <groupId>org.graylog2</groupId>
+        <groupId>com.globo.graylog2</groupId>
         <artifactId>gelfj</artifactId>
-        <version>1.1.14</version>
+        <version>1.1.16-SNAPSHOT</version>
         <scope>compile</scope>
       </dependency>
       ...

@@ -3,6 +3,7 @@ package org.graylog2.sender;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
+import java.net.SocketTimeoutException;
 import java.net.StandardSocketOptions;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
@@ -12,6 +13,7 @@ import java.nio.channels.SocketChannel;
 import org.graylog2.message.GelfMessage;
 
 public class GelfTCPSender implements GelfSender {
+
 	private boolean shutdown;
 	private String host;
 	private int port;
@@ -21,6 +23,7 @@ public class GelfTCPSender implements GelfSender {
 	private TCPBufferManager bufferManager;
 	private Selector selector;
 	private SocketChannel channel;
+	private final boolean blocking;
 
 	public GelfTCPSender(GelfSenderConfiguration configuration) {
 		this.host = configuration.getGraylogHost();
@@ -29,6 +32,7 @@ public class GelfTCPSender implements GelfSender {
 		this.sendTimeout = configuration.getSendTimeout();
 		this.keepalive = configuration.isTcpKeepalive();
 		this.bufferManager = new TCPBufferManager();
+		this.blocking = configuration.isBlocking();
 	}
 
 	public void sendMessage(GelfMessage message) throws GelfSenderException {
@@ -37,17 +41,25 @@ public class GelfTCPSender implements GelfSender {
 				connect();
 			}
 			send(bufferManager.toTCPBuffer(message.toJson()));
+		} catch (GelfTimeoutException e) {
+			closeConnection();
+			throw e;
 		} catch (Exception exception) {
 			closeConnection();
 			throw new GelfSenderException(GelfSenderException.ERROR_CODE_GENERIC_ERROR, exception);
 		}
 	}
 
-	private void send(ByteBuffer buffer) throws IOException, InterruptedException {
-		while (buffer.hasRemaining() && channel.write(buffer) == 0) {
-			if (selector.select(sendTimeout) == 0) {
-				throw new IOException("Send operation timed out");
+	private void send(ByteBuffer buffer) throws IOException, InterruptedException, GelfTimeoutException {
+
+		try {
+			while (buffer.hasRemaining() && channel.write(buffer) == 0) {
+				if (!blocking && selector.select(sendTimeout) == 0) {
+					throw new GelfTimeoutException(171, "Send operation timed out");
+				}
 			}
+		}catch (SocketTimeoutException e) {
+			throw new GelfTimeoutException(171, "Send operation timed out", e);
 		}
 	}
 
@@ -56,14 +68,20 @@ public class GelfTCPSender implements GelfSender {
 			throw new GelfSenderException(GelfSenderException.ERROR_CODE_SHUTTING_DOWN);
 		}
 		selector = Selector.open();
+
 		channel = SocketChannel.open();
-		channel.configureBlocking(false);
+		channel.configureBlocking(blocking);
 		if (sendBufferSize > 0) {
 			channel.setOption(StandardSocketOptions.SO_SNDBUF, sendBufferSize);
 		}
 		channel.setOption(StandardSocketOptions.SO_KEEPALIVE, keepalive);
-		channel.connect(new InetSocketAddress(host, port));
-		channel.register(selector, SelectionKey.OP_CONNECT | SelectionKey.OP_WRITE);
+
+		if ( !blocking ) {
+			channel.connect(new InetSocketAddress(host, port));
+			channel.register(selector, SelectionKey.OP_CONNECT | SelectionKey.OP_WRITE);
+		} else {
+			channel.socket().connect(new InetSocketAddress(host, port), sendTimeout);
+		}
 
 		while (!channel.finishConnect()) {
 			if (selector.select(sendTimeout) == 0) {

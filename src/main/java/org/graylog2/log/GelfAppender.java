@@ -16,6 +16,7 @@ import org.graylog2.sender.GelfSenderConfiguration;
 import org.graylog2.sender.GelfSenderConfigurationException;
 import org.graylog2.sender.GelfSenderException;
 import org.graylog2.sender.GelfSenderFactory;
+import org.graylog2.sender.GelfTimeoutException;
 import org.json.simple.JSONValue;
 
 /**
@@ -33,6 +34,9 @@ public class GelfAppender extends AppenderSkeleton implements GelfMessageProvide
 	private boolean addExtendedInformation;
 	private boolean includeLocation = true;
 	private Map<String, String> fields;
+	private int retries = 0;
+
+	private boolean retry = false;
 
 	public GelfAppender() {
 		super();
@@ -228,6 +232,10 @@ public class GelfAppender extends AppenderSkeleton implements GelfMessageProvide
 
 	@Override
 	protected void append(LoggingEvent event) {
+		appendWithRetry(event, retry);
+	}
+
+	private void appendWithRetry(LoggingEvent event, boolean retryLocal) {
 		GelfSender sender = getGelfSender();
 		if (sender == null) {
 			errorHandler.error("Could not send GELF message. Gelf Sender is not initialised and equals null");
@@ -235,6 +243,24 @@ public class GelfAppender extends AppenderSkeleton implements GelfMessageProvide
 			try {
 				GelfMessage gelfMessage = messageFactory.makeMessage(layout, event, this);
 				sender.sendMessage(gelfMessage);
+			} catch (GelfTimeoutException e) {
+				if (retryLocal) {
+					try {
+						Thread.sleep(1);
+					} catch (InterruptedException e1) {
+						e1.printStackTrace();
+					}
+					retries++;
+
+					if (isDebug()) {
+						System.out.println("Retries: " + retries);
+					}
+
+					appendWithRetry(event, false);
+				} else {
+					errorHandler.error("Error during sending GELF message. Error code: " + e.getErrorCode() + ".",
+							e.getCause(), ErrorCode.WRITE_FAILURE);
+				}
 			} catch (GelfMessageBuilderException exception) {
 				errorHandler.error("Error building GELF message", exception, ErrorCode.WRITE_FAILURE);
 			} catch (GelfSenderException exception) {
@@ -261,5 +287,30 @@ public class GelfAppender extends AppenderSkeleton implements GelfMessageProvide
 
 	public boolean requiresLayout() {
 		return true;
+	}
+
+
+	public boolean isRetry() {
+		return retry;
+	}
+
+	public void setRetry(boolean retry) {
+		this.retry = retry;
+	}
+
+	public boolean isBlocking() {
+		return this.senderConfiguration.isBlocking();
+	}
+
+	public void setBlocking(boolean blocking) {
+		this.senderConfiguration.setBlocking(blocking);
+	}
+
+	public boolean isDebug() {
+		return this.senderConfiguration.isDebug();
+	}
+
+	public void setDebug(boolean debug) {
+		this.senderConfiguration.setDebug(debug);
 	}
 }

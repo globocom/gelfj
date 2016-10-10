@@ -18,6 +18,8 @@ public class GelfSenderConfiguration {
 	private int socketSendBufferSize;
 	private int sendTimeout;
 	private int maxRetries;
+	private boolean blocking = false;
+	private boolean debug = false;
 
 	public GelfSenderConfiguration() {
 		this.protocol = DEFAULT_PROTOCOL;
@@ -161,5 +163,21 @@ public class GelfSenderConfiguration {
 
 	public void setMaxRetries(int maxRetries) {
 		this.maxRetries = maxRetries;
+	}
+
+	public boolean isBlocking() {
+		return blocking;
+	}
+
+	public void setBlocking(boolean blocking) {
+		this.blocking = blocking;
+	}
+
+	public boolean isDebug() {
+		return debug;
+	}
+
+	public void setDebug(boolean debug) {
+		this.debug = debug;
 	}
 }

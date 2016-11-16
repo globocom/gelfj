@@ -18,7 +18,7 @@
 	<!-- we changed from org.graylog2 because we will create and publish our own version -->
 	<groupId>com.globo.graylog2</groupId>
 	<artifactId>gelfj</artifactId>
-	<version>1.1.16-SNAPSHOT</version>
+	<version>1.1.16.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>gelfj</name>
 	<description>GELF implementation in Java and log4j appender without any dependencies.</description>

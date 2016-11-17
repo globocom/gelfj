@@ -16,4 +16,6 @@ public interface GelfMessageProvider {
 	public boolean isIncludeLocation();
 
 	boolean isOnlyShortMessage();
+
+	public boolean addJavaTimestampField();
 }

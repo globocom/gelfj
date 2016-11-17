@@ -15,7 +15,7 @@ import org.graylog2.message.GelfMessageBuilderException;
 
 public class GelfMessageFactory {
 	private static Method methodGetTimeStamp = null;
-	private static final String LOGGER_NDC = "loggerNdc";
+	private static final String LOGGER_NDC = "context";
 	private static final String JAVA_TIMESTAMP = "timestampMs";
 
 	static {
@@ -61,7 +61,9 @@ public class GelfMessageFactory {
 			builder.addField(GelfMessageBuilder.THREAD_NAME_FIELD, event.getThreadName());
 			builder.addField(GelfMessageBuilder.LOGGER_LEVEL_FIELD, level.toString());
 			builder.addField(GelfMessageBuilder.LOGGER_NAME_FIELD, event.getLoggerName());
-			builder.addField(JAVA_TIMESTAMP, timeStamp);
+			if (provider.addJavaTimestampField()) {
+				builder.addField(JAVA_TIMESTAMP, timeStamp);
+			}
 			builder.addFields(event.getProperties());
 			String ndc = event.getNDC();
 			if (ndc != null) {

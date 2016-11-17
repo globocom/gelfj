@@ -127,7 +127,7 @@ public class GelfAppenderTest {
 
 		gelfAppender.append(event);
 
-		assertEquals("Foobar", gelfSender.getLastMessage().getAdditionalFields().get("loggerNdc"));
+		assertEquals("Foobar", gelfSender.getLastMessage().getAdditionalFields().get("context"));
 	}
 
 	@Test

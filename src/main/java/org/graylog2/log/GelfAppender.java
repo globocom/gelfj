@@ -37,6 +37,7 @@ public class GelfAppender extends AppenderSkeleton implements GelfMessageProvide
 	private int retries = 0;
 
 	private boolean retry = false;
+	private boolean addJavaTimestampField = false;
 
 	public GelfAppender() {
 		super();
@@ -190,6 +191,10 @@ public class GelfAppender extends AppenderSkeleton implements GelfMessageProvide
 
 	public boolean isOnlyShortMessage() {
 		return onlyShortMessage;
+	}
+
+	public boolean addJavaTimestampField() {
+		return addJavaTimestampField;
 	}
 
 	public void setOnlyShortMessage(boolean onlyShortMessage) {

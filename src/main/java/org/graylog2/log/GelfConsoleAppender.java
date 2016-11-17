@@ -66,6 +66,10 @@ public class GelfConsoleAppender extends ConsoleAppender implements GelfMessageP
 		return onlyShortMessage;
 	}
 
+	public boolean addJavaTimestampField() {
+		return false;
+	}
+
 	public void setOnlyShortMessage(boolean onlyShortMessage) {
 		this.onlyShortMessage = onlyShortMessage;
 	}

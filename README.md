@@ -1,6 +1,11 @@
 GELFJ - A GELF Appender for Log4j and a GELF Handler for JDK Logging
 ====================================================================
 
+Fork Comments
+--------------
+
+We forked from commit 131aa2b3424a827a9cce6d26eb1364da7a7c9ebd of [skorhone](https://github.com/skorhone/gelfj). The original code is [t0xa](https://github.com/t0xa/gelfj). We changed the groupId from 'org.graylog2' to 'com.globo.graylog2' because we needed to publish our own version in maven central. We changed the formmat version from x.x.x to x.x.x.g, where 'g' is our version and 'x.x.x' the source forked version.
+ 
 Downloading
 -----------
 
@@ -9,10 +14,11 @@ Add the following dependency section to your pom.xml:
     <dependencies>
       ...
       <dependency>
-        <groupId>com.globo.graylog2</groupId>
-        <artifactId>gelfj</artifactId>
-        <version>1.1.16-SNAPSHOT</version>
-        <scope>compile</scope>
+        <dependency>
+            <groupId>com.globo.graylog2</groupId>
+            <artifactId>gelfj</artifactId>
+            <version>1.1.16.1</version>
+        </dependency>
       </dependency>
       ...
     </dependencies>
